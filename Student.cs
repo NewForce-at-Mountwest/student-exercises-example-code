@@ -6,3 +6,22 @@ Last name
 Slack handle
 The student's cohort
 The collection of exercises that the student is currently working on */
+
+using System;
+using System.Collections.Generic;
+
+namespace student_exercises{
+    class Student : Person{
+
+        // public Student(string firstNameParam){
+        //   FirstName = firstNameParam;
+        // }
+
+
+        public List<Exercise> Exercises {get; set;} = new List<Exercise>();
+
+        public Exercise getExerciseById(int id){
+            return Exercises[id];
+        }
+    }
+}
