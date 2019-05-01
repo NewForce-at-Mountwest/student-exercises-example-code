@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace student_exercises
 {
@@ -54,6 +55,11 @@ namespace student_exercises
             Cohort cohortOne = new Cohort()
             {
                 name = "Cohort One"
+            };
+
+            Cohort cohortTwo = new Cohort()
+            {
+                name = "Cohort Two"
             };
 
             Student russ = new Student()
@@ -113,12 +119,18 @@ namespace student_exercises
                 CurrentCohort = cohortOne
             };
 
-
+            // Assign some exercises
             Kim.AssignExercise(kennel, russ);
             Josh.AssignExercise(boogers, bobby);
             Jordan.AssignExercise(chickenMonkey, sydney);
             Jordan.AssignExercise(chickenMonkey, russ);
             Jordan.AssignExercise(chickenMonkey, bobby);
+
+            // Add some students to the cohorts
+            cohortOne.StudentList.Add(sydney);
+            cohortOne.StudentList.Add(russ);
+            cohortOne.StudentList.Add(bobby);
+            cohortOne.StudentList.Add(david);
 
 
             /*
@@ -141,6 +153,17 @@ namespace student_exercises
                 boogers,
                 chickenMonkey,
                 familyDictionary
+            };
+
+            List<Instructor> InstructorList = new List<Instructor>(){
+                Jordan,
+                Josh,
+                Kim
+            };
+
+            List<Cohort> CohortList = new List<Cohort>(){
+                cohortOne,
+                cohortTwo
             };
 
             // Loop through all exercises
@@ -186,11 +209,67 @@ namespace student_exercises
                 Exercise exerciseDetails = russ.getExerciseById(100);
                 Console.WriteLine(exerciseDetails.Name);
 
-                
 
-            } catch (System.ArgumentOutOfRangeException){
+
+            }
+            catch (System.ArgumentOutOfRangeException)
+            {
                 Console.WriteLine($"The student is not working on the exercise with that id.");
             }
+
+            // ------ PART TWO: LINQ -----//
+
+            // List exercises for the JavaScript language by using the Where() LINQ method.
+            List<Exercise> JSExercises = ExerciseList.Where(e => e.Language == "JavaScript").ToList();
+            Console.WriteLine();
+            Console.WriteLine("JS Exercises: ");
+            JSExercises.ForEach(e => Console.WriteLine(e.Name));
+
+
+
+            // List students in a particular cohort by using the Where() LINQ method.
+            // cohortOne.StudentList.ForEach(s => Console.WriteLine(s.FirstName));
+            IEnumerable<Student> CohortOneStudnets = StudentList.Where(s => s.CurrentCohort == cohortOne);
+            Console.WriteLine();
+            Console.WriteLine("Cohort One Students ");
+            CohortOneStudnets.ToList().ForEach(s => Console.WriteLine(s.FirstName));
+
+            // List instructors in a particular cohort by using the Where() LINQ method.
+            IEnumerable<Instructor> CohortOneInstructors = InstructorList.Where(i => i.CurrentCohort == cohortOne);
+            Console.WriteLine();
+            Console.WriteLine("Cohort One Instructors ");
+            CohortOneInstructors.ToList().ForEach(i => Console.WriteLine(i.FirstName));
+
+            // Sort the students by their last name.
+            IEnumerable<Student> SortedStudents = StudentList.OrderBy(s => s.LastName);
+            Console.WriteLine();
+            Console.WriteLine("Students In Order By Last Name ");
+            SortedStudents.ToList().ForEach(s => Console.WriteLine($"{s.FirstName} {s.LastName}"));
+
+
+            // Display any students that aren't working on any exercises (Make sure one of your student instances don't have any exercises. Create a new student if you need to.)
+            IEnumerable<Student> LazyStudents = StudentList.Where(s => s.Exercises.Count == 0);
+            Console.WriteLine();
+            Console.WriteLine("Students with no exercises");
+            LazyStudents.ToList().ForEach(s => Console.WriteLine(s.FirstName));
+
+            // Which student is working on the most exercises? Make sure one of your students has more exercises than the others.
+            // var busy = StudentList.Max(s => s.Exercises.Count);
+            Student BusiestStudent = StudentList.OrderByDescending(s => s.Exercises.Count).FirstOrDefault();
+            Console.WriteLine();
+            Console.WriteLine("Busiest Student:");
+            Console.WriteLine(BusiestStudent.FirstName);
+
+            // How many students in each cohort?
+            var cohortReport = from cohort in CohortList select new { name = cohort.name, count = cohort.StudentList.Count() };
+            // Console.WriteLine();
+            // Console.WriteLine("How many students per cohort:");
+            foreach (var cohort in cohortReport)
+            {
+                Console.WriteLine($"{cohort.name} {cohort.count}");
+            }
+
+
 
 
         }
